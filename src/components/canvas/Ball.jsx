@@ -1,5 +1,5 @@
-// Ball.jsx
-import React, { Suspense } from "react";
+// BallCanvas.jsx
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Decal,
@@ -14,17 +14,13 @@ const Ball = ({ imgUrl, isMobile }) => {
   const [decal] = useTexture([imgUrl]);
 
   return (
-    <Float
-      speed={isMobile ? 1 : 1.75}
-      rotationIntensity={isMobile ? 0.5 : 1}
-      floatIntensity={isMobile ? 1 : 2}
-    >
+    <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
       <ambientLight intensity={0.25} />
       <directionalLight position={[0, 0, 0.05]} />
-      <mesh castShadow receiveShadow scale={2.75}>
+      <mesh castShadow receiveShadow scale={isMobile ? 2.2 : 2.75}>
         <icosahedronGeometry args={[1, 1]} />
         <meshStandardMaterial
-          color="#fff8eb"
+          color='#fff8eb'
           polygonOffset
           polygonOffsetFactor={-5}
           flatShading
@@ -42,22 +38,30 @@ const Ball = ({ imgUrl, isMobile }) => {
 };
 
 const BallCanvas = ({ icon }) => {
-  const isMobile = window.innerWidth <= 600;
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    setIsMobile(mediaQuery.matches);
+
+    const handleMediaQueryChange = (event) => {
+      setIsMobile(event.matches);
+    };
+
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+    };
+  }, []);
 
   return (
-    <div className="w-full h-[150px] sm:h-[200px]">
-      <Canvas
-        frameloop="demand"
-        dpr={[1, 1]}
-        gl={{ preserveDrawingBuffer: true, powerPreference: "high-performance" }}
-      >
-        <Suspense fallback={<CanvasLoader />}>
-          <OrbitControls enableZoom={false} />
-          <Ball imgUrl={icon} isMobile={isMobile} />
-        </Suspense>
-        <Preload all />
-      </Canvas>
-    </div>
+    <Canvas frameloop='demand' dpr={[1, 2]} gl={{ preserveDrawingBuffer: true }}>
+      <Suspense fallback={<CanvasLoader />}>
+        <OrbitControls enableZoom={false} />
+        <Ball imgUrl={icon} isMobile={isMobile} />
+      </Suspense>
+      <Preload all />
+    </Canvas>
   );
 };
 
