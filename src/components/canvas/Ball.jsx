@@ -1,3 +1,4 @@
+// Ball.jsx
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -7,20 +8,23 @@ import {
   Preload,
   useTexture,
 } from "@react-three/drei";
-
 import CanvasLoader from "../Loader";
 
-const Ball = (props) => {
-  const [decal] = useTexture([props.imgUrl]);
+const Ball = ({ imgUrl, isMobile }) => {
+  const [decal] = useTexture([imgUrl]);
 
   return (
-    <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
-      <ambientLight intensity={0.25} /> // Add ambient light for better visibility
+    <Float
+      speed={isMobile ? 1 : 1.75}
+      rotationIntensity={isMobile ? 0.5 : 1}
+      floatIntensity={isMobile ? 1 : 2}
+    >
+      <ambientLight intensity={0.25} />
       <directionalLight position={[0, 0, 0.05]} />
       <mesh castShadow receiveShadow scale={2.75}>
         <icosahedronGeometry args={[1, 1]} />
         <meshStandardMaterial
-          color='#fff8eb'
+          color="#fff8eb"
           polygonOffset
           polygonOffsetFactor={-5}
           flatShading
@@ -38,19 +42,22 @@ const Ball = (props) => {
 };
 
 const BallCanvas = ({ icon }) => {
-  return (
-    <Canvas
-      frameloop='demand'
-      dpr={[1, 2]}
-      gl={{ preserveDrawingBuffer: true }}
-    >
-      <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls enableZoom={false} />
-        <Ball imgUrl={icon} />
-      </Suspense>
+  const isMobile = window.innerWidth <= 600;
 
-      <Preload all />
-    </Canvas>
+  return (
+    <div className="w-full h-[150px] sm:h-[200px]">
+      <Canvas
+        frameloop="demand"
+        dpr={[1, 1]}
+        gl={{ preserveDrawingBuffer: true, powerPreference: "high-performance" }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <OrbitControls enableZoom={false} />
+          <Ball imgUrl={icon} isMobile={isMobile} />
+        </Suspense>
+        <Preload all />
+      </Canvas>
+    </div>
   );
 };
 
