@@ -1,31 +1,11 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
-// Preload the model immediately when module loads
-useGLTF.preload("/planet/scene.gltf");
-
 const Earth = () => {
-  const [earth, setEarth] = useState(null);
-
-  useEffect(() => {
-    useGLTF("/planet/scene.gltf").then((gltf) => {
-      setEarth(gltf);
-    }).catch((error) => {
-      console.error("Error loading earth model:", error);
-    });
-  }, []);
-
-  if (!earth) {
-    return (
-      <mesh>
-        <sphereGeometry args={[1, 32, 32]} />
-        <meshPhongMaterial color="#1a3a5f" />
-      </mesh>
-    );
-  }
+  const earth = useGLTF("/planet/scene.gltf");
 
   return (
     <primitive object={earth.scene} scale={2.5} position-y={0} rotation-y={0} />
