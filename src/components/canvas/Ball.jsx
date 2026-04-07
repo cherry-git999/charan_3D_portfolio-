@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
   Decal,
@@ -11,7 +11,18 @@ import {
 import CanvasLoader from "../Loader";
 
 const Ball = (props) => {
-  const [decal] = useTexture([props.imgUrl]);
+  const [texture, setTexture] = useState(null);
+
+  useEffect(() => {
+    if (props.imgUrl) {
+      useTexture.preload(props.imgUrl);
+      useTexture(props.imgUrl)
+        .then((tex) => setTexture(tex))
+        .catch((error) => {
+          console.error("Error loading texture:", props.imgUrl, error);
+        });
+    }
+  }, [props.imgUrl]);
 
   return (
     <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
@@ -25,13 +36,15 @@ const Ball = (props) => {
           polygonOffsetFactor={-5}
           flatShading
         />
-        <Decal
-          position={[0, 0, 1]}
-          rotation={[2 * Math.PI, 0, 6.25]}
-          scale={1}
-          map={decal}
-          flatShading
-        />
+        {texture && (
+          <Decal
+            position={[0, 0, 1]}
+            rotation={[2 * Math.PI, 0, 6.25]}
+            scale={1}
+            map={texture}
+            flatShading
+          />
+        )}
       </mesh>
     </Float>
   );

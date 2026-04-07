@@ -5,16 +5,17 @@ import { ComputersCanvas } from "./canvas";
 
 const Hero = () => {
   return (
-    <section className={`relative w-full h-[600px] sm:h-[700px] md:h-screen mx-auto`}>
+    <section className={`relative w-full flex flex-col md:block md:h-screen mx-auto`}>
+      {/* Hero Text - Visible on all screens, positioned absolutely on desktop */}
       <div
-        className={`absolute inset-0 top-[120px] md:top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5`}
+        className={`w-full md:absolute md:inset-0 md:top-[120px] max-w-7xl mx-auto ${styles.paddingX} flex flex-row items-start gap-5 py-8 md:py-0`}
       >
         <div className='hidden md:flex flex-col justify-center items-center mt-5'>
           <div className='w-5 h-5 rounded-full bg-[#915EFF]' />
           <div className='w-1 sm:h-80 h-40 violet-gradient' />
         </div>
 
-        <div className='md:block'>
+        <div className='w-full md:block'>
           <h1 className={`${styles.heroHeadText} text-white`}>
             Hi, I'm <span className='text-[#915EFF]'>Charan</span>
           </h1>
@@ -25,11 +26,13 @@ const Hero = () => {
         </div>
       </div>
 
-      <div className='absolute inset-0 top-0 md:top-0 w-full h-[300px] sm:h-[400px] md:h-full'>
+      {/* Hero Canvas - Below text on mobile, full screen on desktop */}
+      <div className='w-full h-[300px] sm:h-[400px] md:absolute md:inset-0 md:top-0 md:h-full'>
         <ComputersCanvas />
       </div>
 
-      <div className='absolute xs:bottom-10 bottom-20 sm:bottom-32 md:bottom-10 w-full flex justify-center items-center'>
+      {/* Scroll indicator */}
+      <div className='w-full md:absolute flex md:flex justify-center items-center xs:bottom-10 bottom-20 sm:bottom-32 md:bottom-10 py-8 md:py-0'>
         <a href='#about'>
           <div className='w-[35px] h-[64px] rounded-3xl border-4 border-secondary flex justify-center items-start p-2'>
             <motion.div

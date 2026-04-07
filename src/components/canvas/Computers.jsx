@@ -6,8 +6,28 @@ import { OrbitControls, Preload, useGLTF } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
+// Preload the model immediately when module loads
+useGLTF.preload("/desktop_pc/scene.gltf");
+
 const Computers = ({ isMobile }) => {
-  const computer = useGLTF("/desktop_pc/scene.gltf");
+  const [computer, setComputer] = useState(null);
+
+  useEffect(() => {
+    useGLTF("/desktop_pc/scene.gltf").then((gltf) => {
+      setComputer(gltf);
+    }).catch((error) => {
+      console.error("Error loading computer model:", error);
+    });
+  }, []);
+
+  if (!computer) {
+    return (
+      <mesh>
+        <boxGeometry args={[2, 2, 2]} />
+        <meshPhongMaterial color="#1a1a2e" />
+      </mesh>
+    );
+  }
 
   return (
     <mesh>
