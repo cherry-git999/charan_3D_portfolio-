@@ -16,14 +16,15 @@ const Ball = (props) => {
   return (
     <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
       <ambientLight intensity={0.25} />
-      <directionalLight position={[0, 0, 0.05]} />
-      <mesh castShadow receiveShadow scale={2.75}>
+      <directionalLight position={[0, 0, 0.05]} intensity={0.5} />
+      <mesh castShadow={false} receiveShadow={false} scale={2.75}>
         <icosahedronGeometry args={[1, 1]} />
-        <meshStandardMaterial
+        <meshPhongMaterial
           color='#fff8eb'
           polygonOffset
           polygonOffsetFactor={-5}
           flatShading
+          shininess={0}
         />
         <Decal
           position={[0, 0, 1]}
@@ -42,8 +43,12 @@ const BallCanvas = ({ icon }) => {
     <div className='w-full h-full'>
       <Canvas
         frameloop='demand'
-        dpr={[1, 2]}
-        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        dpr={1}
+        gl={{ 
+          preserveDrawingBuffer: true, 
+          antialias: false,
+          powerPreference: "low-power"
+        }}
       >
         <Suspense fallback={<CanvasLoader />}>
           <OrbitControls enableZoom={false} />

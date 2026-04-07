@@ -11,16 +11,15 @@ const Computers = ({ isMobile }) => {
 
   return (
     <mesh>
-      <hemisphereLight intensity={2} groundColor='black' />
+      <hemisphereLight intensity={isMobile ? 1 : 2} groundColor='black' />
       <spotLight
         position={[-20, 50, 10]}
         angle={0.12}
         penumbra={1}
-        intensity={1}
-        castShadow
-        shadow-mapSize={1024}
+        intensity={isMobile ? 0.5 : 1}
+        castShadow={false}
       />
-      <pointLight intensity={1} />
+      <pointLight intensity={isMobile ? 0.5 : 1} />
       <primitive
         object={computer.scene}
         scale={isMobile ? 0.7 : 0.75}
@@ -33,6 +32,7 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
 
   useEffect(() => {
     // Add a listener for changes to the screen size
@@ -58,10 +58,14 @@ const ComputersCanvas = () => {
   return (
     <Canvas
       frameloop='demand'
-      shadows
-      dpr={[1, 2]}
+      shadows={false}
+      dpr={isMobile ? 1 : [1, 2]}
       camera={{ position: isMobile ? [25, 3, 5] : [20, 3, 5], fov: isMobile ? 30 : 25 }}
-      gl={{ preserveDrawingBuffer: true, antialias: true }}
+      gl={{ 
+        preserveDrawingBuffer: true, 
+        antialias: false,
+        powerPreference: "low-power"
+      }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls

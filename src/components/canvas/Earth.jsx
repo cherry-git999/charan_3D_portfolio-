@@ -16,10 +16,14 @@ const EarthCanvas = () => {
   return (
     <div className='w-full h-full'>
       <Canvas
-        shadows
+        shadows={false}
         frameloop='demand'
-        dpr={[1, 2]}
-        gl={{ preserveDrawingBuffer: true, antialias: true }}
+        dpr={1}
+        gl={{ 
+          preserveDrawingBuffer: true, 
+          antialias: false,
+          powerPreference: "low-power"
+        }}
         camera={{
           fov: 45,
           near: 0.1,
